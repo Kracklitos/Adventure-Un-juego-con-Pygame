@@ -54,3 +54,46 @@ class Character:
         #self.status = StatusIdle()  # Inicializa el estado del personaje como 'idle'
         self.sprite = SPRITE_IDLE  # Inicializa el sprite del personaje como 'idle'
         self.last_test = LEFT_BLOCK  # Inicializa la última dirección de movimiento como 'LEFT_BLOCK'
+
+
+    # Maneja las entradas del usuario
+    def handle(self, inputs):
+        self.status.handle(self, inputs)  # Llama al método 'handle' del estado actual
+        self.vx = 0  # Inicializa la velocidad horizontal
+        if inputs[pygame.K_a]:  # Si se presiona 'A'
+            self.vx = -MOV_SPEED  # Mueve a la izquierda
+        elif inputs[pygame.K_d]:  # Si se presiona 'D'
+            self.vx = MOV_SPEED  # Mueve a la derecha
+
+    # Actualiza el estado y la posición del personaje
+    def update(self, delay):
+        self.delay = delay  # Asigna el retardo
+        self.status.update(self, delay)  # Actualiza el estado del personaje
+        dvx = (self.vx * delay)  # Calcula la distancia horizontal a mover
+        if dvx != 0.0000:  # Si hay movimiento horizontal
+            test = LEFT_BLOCK if dvx < 0 else RIGHT_BLOCK  # Determina la dirección de movimiento
+            self.last_test = test  # Actualiza la última dirección de movimiento
+        else:
+            test = self.last_test  # Mantiene la última dirección de movimiento
+        self.update_target(test)  # Actualiza el bloque objetivo
+        if self.target is not None:  # Si hay un bloque objetivo
+            size = adventure.default.block_size  # Obtiene el tamaño de bloque
+            x, y = self.target  # Obtiene las coordenadas del bloque objetivo
+            t_x  = (((x + 1) * size + 1) if dvx < 0 else (x *  size) - 1)  # Calcula la posición x del bloque objetivo
+            w    = 0 if dvx < 0 else self.w  # Calcula el ancho del personaje para la colisión
+
+            # Colisión con la izquierda
+            if test == LEFT_BLOCK:
+                if (self.x + dvx) - t_x < 0:  # Si el personaje choca con el bloque objetivo
+                    self.x = t_x - w  # Ajusta la posición x del personaje
+                    dvx = 0  # Anula el movimiento horizontal
+            # Colisión con la derecha
+            else:
+                if (self.x + w + dvx) - t_x > 0:
+                    self.x = t_x - w  
+                    dvx = 0  
+
+        # Actualiza la posición x del personaje
+        self.x += dvx 
+        # Actualiza la posición y del personaje
+        self.y += (self.vy * delay)
