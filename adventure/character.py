@@ -174,13 +174,14 @@ class Character:
                 adventure.default.restart()  # Reinicia el juego
             # Si la propiedad "collision" es "jump"
             elif block["collision"] == "jump":
-                #self.status = StatusDJump()  # Cambia el estado a 'djump'
+                self.status = StatusDJump()  # Cambia el estado a 'djump'
                 self.sprite = SPRITE_DJUMP  # Cambia el sprite a 'djump'
                 self.djump = False  # Deshabilita el doble salto
                 self.vy = -600  # Aplica la potencia del salto
         # Si el bloque tiene la propiedad "transport"
         if "transport" in block:
             adventure.default.load_level(block["transport"])  # Carga el nivel indicado
+
 
 # Define el estado "idle" del personaje
 class StatusIdle:
@@ -224,6 +225,7 @@ class StatusIdle:
             instance.status = StatusFall()  # Cambia el estado a 'fall'
             instance.sprite = SPRITE_FALL  # Cambia el sprite a 'fall'
 
+
 # Define el estado "jump" del personaje
 class StatusJump:
     name = "jump"  # Nombre del estado
@@ -237,7 +239,7 @@ class StatusJump:
             if inputs[pygame.K_w]:
                 # Si se ha soltado la tecla 'W' y el personaje puede hacer un doble salto
                 if self.release and instance.djump:
-                    #instance.status = StatusDJump()  # Cambia el estado a 'djump'
+                    instance.status = StatusDJump()  # Cambia el estado a 'djump'
                     instance.sprite = SPRITE_DJUMP  # Cambia el sprite a 'djump'
                     instance.vy = -DJUMP_POWER  # Aplica la potencia del doble salto
                     instance.djump = False  # Deshabilita el doble salto
@@ -292,7 +294,7 @@ class StatusFall:
         if inputs is not None:
             # Si se presiona la tecla 'W' y el personaje puede hacer un doble salto
             if inputs[pygame.K_w] and instance.djump:
-                #instance.status = StatusDJump()  # Cambia el estado a 'djump'
+                instance.status = StatusDJump()  # Cambia el estado a 'djump'
                 instance.sprite = SPRITE_DJUMP  # Cambia el sprite a 'djump'
                 instance.vy = -DJUMP_POWER  # Aplica la potencia del doble salto
                 instance.djump = False  # Deshabilita el doble salto
@@ -326,6 +328,7 @@ class StatusFall:
             if b is not None:
                 self.target = block
                 break
+
 
 # Define el estado "run" del personaje
 class StatusRun:
@@ -368,3 +371,57 @@ class StatusRun:
             instance.vy = 10  # Aumenta la velocidad de caída
             instance.status = StatusFall()  # Cambia el estado a 'fall'
             instance.sprite = SPRITE_FALL  # Cambia el sprite a 'fall'
+
+
+# Define el estado "djump" del personaje
+class StatusDJump:
+    name = "djump"  # Nombre del estado
+    index = 0  # Índice del sprite actual
+    count = 6  # Número de sprites en la animación
+    delay_sum = 0  # Suma del retardo para la animación
+    target = None  # Bloque objetivo para la detección de colisiones
+
+    # Maneja las entradas del usuario en el estado "djump"
+    def handle(self, instance, inputs):
+        pass  # No se manejan entradas en este estado
+
+    # Actualiza el estado "djump"
+    def update(self, instance, delay):
+        # Incrementa el índice del sprite cada 0.05 segundos
+        if self.delay_sum > 0.05:
+            self.index += 1;
+            self.delay_sum = 0
+        self.delay_sum += delay  # Suma el retardo
+        instance.vy += (adventure.GRAVITY * delay)  # Aplica la gravedad
+        # Si la velocidad vertical es mayor que 0, el personaje está cayendo
+        if instance.vy > 0:
+            instance.status = StatusFall()  # Cambia el estado a 'fall'
+            instance.sprite = SPRITE_FALL  # Cambia el sprite a 'fall'
+        else:
+            self.update_target(instance)  # Actualiza el bloque objetivo
+            # Si hay un bloque objetivo
+            if self.target is not None:
+                size = adventure.default.block_size  # Obtiene el tamaño del bloque
+                x, y = self.target  # Obtiene las coordenadas del bloque
+                t_y = (y + 1) * size  # Calcula la coordenada y del borde inferior del bloque
+                # Si el personaje choca con el bloque superior
+                if (instance.y - (adventure.GRAVITY * delay)) - t_y < 0:
+                    b = adventure.default.get_block_id(x, y)  # Obtiene el ID del bloque
+                    instance.on_collision(b)  # Maneja la colisión con el bloque
+                    instance.y = t_y + 1  # Ajusta la posición y del personaje
+                    instance.status = StatusFall()  # Cambia el estado a 'fall'
+                    instance.sprite = SPRITE_FALL  # Cambia el sprite a 'fall'
+                    instance.vy = 1  # Reinicia la velocidad vertical
+
+    # Actualiza el bloque objetivo en el estado "djump"
+    def update_target(self, instance):
+        blocks = instance.get_surrounding_block(TOP_BLOCK)  # Obtiene los bloques arriba del personaje
+        self.target = None  # Inicializa el bloque objetivo
+        # Itera sobre los bloques arriba del personaje
+        for block in blocks:
+            x, y = block  # Obtiene las coordenadas del bloque
+            b = adventure.default.get_block_id(x, y)  # Obtiene el ID del bloque
+            # Si el bloque no es nulo, se establece como objetivo
+            if b is not None:
+                self.target = block
+                break
