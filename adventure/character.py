@@ -51,7 +51,7 @@ class Character:
         self.y = y  # Asigna la posición y inicial
         self.w = w  # Asigna el ancho del personaje
         self.h = h  # Asigna el alto del personaje
-        #self.status = StatusIdle()  # Inicializa el estado del personaje como 'idle'
+        self.status = StatusIdle()  # Inicializa el estado del personaje como 'idle'
         self.sprite = SPRITE_IDLE  # Inicializa el sprite del personaje como 'idle'
         self.last_test = LEFT_BLOCK  # Inicializa la última dirección de movimiento como 'LEFT_BLOCK'
 
@@ -181,3 +181,45 @@ class Character:
         # Si el bloque tiene la propiedad "transport"
         if "transport" in block:
             adventure.default.load_level(block["transport"])  # Carga el nivel indicado
+
+# Define el estado "idle" del personaje
+class StatusIdle:
+    name = "idle"  # Nombre del estado
+    index = 0  # Índice del sprite actual
+    count = 11  # Número de sprites en la animación
+    delay_sum = 0  # Suma del retardo para la animación
+
+    # Maneja las entradas del usuario en el estado "idle"
+    def handle(self, instance, inputs=None):
+        if inputs is not None:
+            # Si se presiona la tecla 'W'
+            if inputs[pygame.K_w]:
+                #instance.status = StatusJump()  # Cambia el estado a 'jump'
+                instance.sprite = SPRITE_JUMP  # Cambia el sprite a 'jump'
+                instance.vy = -JUMP_POWER  # Aplica la potencia del salto
+            # Si se presionan las teclas 'A' o 'D'
+            if inputs[pygame.K_d] or inputs[pygame.K_a]:
+                #instance.status = StatusRun()  # Cambia el estado a 'run'
+                instance.sprite = SPRITE_RUN  # Cambia el sprite a 'run'
+
+    # Actualiza el estado "idle"
+    def update(self, instance, delay):
+        # Incrementa el índice del sprite cada 0.05 segundos
+        if self.delay_sum > 0.05:
+            self.index += 1;
+            self.delay_sum = 0
+        self.delay_sum += delay  # Suma el retardo
+        block = instance.get_surrounding_block(BOTTOM_BLOCK)  # Obtiene los bloques debajo del personaje
+        fall = True  # Bandera para indicar si el personaje está cayendo
+        # Itera sobre los bloques debajo del personaje
+        for b in block:
+            x, y = b  # Obtiene las coordenadas del bloque
+            b_id = adventure.default.get_block_id(x, y)  # Obtiene el ID del bloque
+            if b_id is not None:  # Si el bloque no es nulo
+                instance.on_collision(b_id)  # Maneja la colisión con el bloque
+                fall = False  # Establece la bandera como falsa (no está cayendo)
+        # Si el personaje está cayendo
+        if fall:
+            instance.vy = 10  # Aumenta la velocidad de caída
+            #instance.status = StatusFall()  # Cambia el estado a 'fall'
+            instance.sprite = SPRITE_FALL  # Cambia el sprite a 'fall'
