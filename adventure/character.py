@@ -221,7 +221,7 @@ class StatusIdle:
         # Si el personaje está cayendo
         if fall:
             instance.vy = 10  # Aumenta la velocidad de caída
-            #instance.status = StatusFall()  # Cambia el estado a 'fall'
+            instance.status = StatusFall()  # Cambia el estado a 'fall'
             instance.sprite = SPRITE_FALL  # Cambia el sprite a 'fall'
 
 # Define el estado "jump" del personaje
@@ -250,7 +250,7 @@ class StatusJump:
         instance.vy += (adventure.GRAVITY * delay)  # Aplica la gravedad
         # Si la velocidad vertical es mayor que 0, el personaje está cayendo
         if instance.vy > 0:
-            #instance.status = StatusFall()  # Cambia el estado a 'fall'
+            instance.status = StatusFall()  # Cambia el estado a 'fall'
             instance.sprite = SPRITE_FALL  # Cambia el sprite a 'fall'
         else:
             self.update_target(instance)  # Actualiza el bloque objetivo
@@ -262,7 +262,7 @@ class StatusJump:
                 # Si el personaje choca con el bloque superior
                 if (instance.y  - (adventure.GRAVITY * delay)) - t_y < 0:
                     instance.y = t_y + 1  # Ajusta la posición y del personaje
-                    #instance.status = StatusFall()  # Cambia el estado a 'fall'
+                    instance.status = StatusFall()  # Cambia el estado a 'fall'
                     instance.sprite = SPRITE_FALL  # Cambia el sprite a 'fall'
                     b = adventure.default.get_block_id(x, y)  # Obtiene el ID del bloque
                     instance.on_collision(b)  # Maneja la colisión con el bloque
@@ -273,6 +273,52 @@ class StatusJump:
         blocks = instance.get_surrounding_block(TOP_BLOCK)  # Obtiene los bloques arriba del personaje
         self.target = None  # Inicializa el bloque objetivo
         # Itera sobre los bloques arriba del personaje
+        for block in blocks:
+            x, y = block  # Obtiene las coordenadas del bloque
+            b = adventure.default.get_block_id(x, y)  # Obtiene el ID del bloque
+            # Si el bloque no es nulo, se establece como objetivo
+            if b is not None:
+                self.target = block
+                break
+
+
+# Define el estado "fall" del personaje
+class StatusFall:
+    name = "fall"  # Nombre del estado
+    target = None  # Bloque objetivo para la detección de colisiones
+
+    # Maneja las entradas del usuario en el estado "fall"
+    def handle(self, instance, inputs=None):
+        if inputs is not None:
+            # Si se presiona la tecla 'W' y el personaje puede hacer un doble salto
+            if inputs[pygame.K_w] and instance.djump:
+                #instance.status = StatusDJump()  # Cambia el estado a 'djump'
+                instance.sprite = SPRITE_DJUMP  # Cambia el sprite a 'djump'
+                instance.vy = -DJUMP_POWER  # Aplica la potencia del doble salto
+                instance.djump = False  # Deshabilita el doble salto
+
+    # Actualiza el estado "fall"
+    def update(self, instance: Character, delay):
+        instance.vy += (adventure.GRAVITY * delay)  # Aplica la gravedad
+        self.update_target(instance)  # Actualiza el bloque objetivo
+        size = adventure.default.block_size  # Obtiene el tamaño del bloque
+        # Si hay un bloque objetivo
+        if self.target is not None:
+            x, y = self.target  # Obtiene las coordenadas del bloque
+            t_y = y * size  # Calcula la coordenada y del borde superior del bloque
+            # Si el personaje choca con el bloque inferior
+            if ((instance.y + instance.h) + (adventure.GRAVITY * delay)) - t_y > 0:
+                instance.y = t_y - instance.h - 1  # Ajusta la posición y del personaje
+                instance.status = StatusIdle()  # Cambia el estado a 'idle'
+                instance.sprite = SPRITE_IDLE  # Cambia el sprite a 'idle'
+                instance.djump = True  # Habilita el doble salto
+                instance.vy = 0  # Reinicia la velocidad vertical
+
+    # Actualiza el bloque objetivo en el estado "fall"
+    def update_target(self, instance):
+        blocks = instance.get_surrounding_block(BOTTOM_BLOCK)  # Obtiene los bloques abajo del personaje
+        self.target = None  # Inicializa el bloque objetivo
+        # Itera sobre los bloques abajo del personaje
         for block in blocks:
             x, y = block  # Obtiene las coordenadas del bloque
             b = adventure.default.get_block_id(x, y)  # Obtiene el ID del bloque
