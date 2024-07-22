@@ -317,3 +317,34 @@ class Adventure:
                                 self.canvas.blit(t, (pos_x, pos_y))  # Dibuja la textura en la celda actual
                             offset_x += 1  # Incrementa el desplazamiento horizontal
                         offset_y += 1  # Incrementa el desplazamiento vertical
+
+    # Dibuja el fondo del juego en el canvas
+    def draw_background(self):
+        camera_block = pygame.Rect(self.default_camera.get_camere_block())  # Obtiene el rectángulo del área visible de la cámara
+        for shit in self.background:  # Recorre los elementos de fondo
+            x, y, key = shit  # Desempaqueta las coordenadas y la clave del elemento de fondo
+            t = self.texture.get_texture(key)  # Obtiene la textura del elemento de fondo
+            if camera_block.collidepoint(x, y):  # Si el elemento de fondo está dentro del área visible de la cámara
+                self.canvas.blit(t, (x * self.block_size, (y * self.block_size)))  # Dibuja la textura en el canvas
+
+    # Dibuja el fondo de la cámara en el canvas
+    def draw_camera_background(self):
+        for bg in self.camera_background:  # Recorre los elementos de fondo de la cámara
+            x, y, key = bg  # Desempaqueta las coordenadas y la clave del elemento de fondo
+            t = self.texture.get_texture(key)  # Obtiene la textura del elemento de fondo
+            self.canvas.blit(t, (self.default_camera.rect.x + x, self.default_camera.rect.y + y))  # Dibuja la textura en el canvas
+
+    # Calcula la interpolación lineal entre dos valores
+    @staticmethod
+    def lerp(v1, v2, f):
+        return v1 + ((v2 - v1) * f)  # Fórmula de interpolación lineal
+
+    # Reinicia el juego
+    def restart(self):
+        self.ch.x = self.start_point["x"]  # Restablece la posición x del personaje
+        self.ch.y = self.start_point["y"]  # Restablece la posición y del personaje
+        self.ch.vx = 0  # Restablece la velocidad x del personaje
+        self.ch.vy = 0  # Restablece la velocidad y del personaje
+
+# Crea un objeto de la clase Adventure
+default = Adventure()
