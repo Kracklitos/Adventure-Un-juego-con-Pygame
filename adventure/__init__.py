@@ -256,3 +256,64 @@ class Adventure:
             y = self.default_camera.rect.h * bg["y"]  # Calcula la posición y del elemento de fondo
             key = bg["key"]  # Obtiene la clave del elemento de fondo
             self.camera_background.append((x, y, key))  # Agrega el elemento de fondo a la lista
+
+    # Crea un nuevo bloque en el mundo del juego.
+    def new_block(self, block, block_id):
+
+        x = block['x']  # Posición x del bloque
+        y = block['y']  # Posición y del bloque
+        w = block['w']  # Ancho del bloque
+        h = block['h']  # Alto del bloque
+        
+        # Recorre las filas y columnas del bloque
+        for row in range(0, h):
+            for col in range(0, w):
+                pos_y = y + row  # Posición y de la celda actual
+                # Si la fila no existe en el árbol, crea una nueva fila
+                if pos_y not in self.world:
+                    self.world.insert(pos_y, rbtree.RBTree())  # Crea un nuevo árbol binario para la fila
+                row_tree = self.world[pos_y]  # Obtiene el árbol de la fila actual
+                pos_x = x + col  # Posición x de la celda actual
+                row_tree.insert(pos_x, block_id)  # Inserta el ID del bloque en el árbol de la fila
+                # Si el bloque tiene una configuración para generar objetos
+                if "gen" in block:
+                    obj = block["gen"]  # Obtiene la configuración de generación
+                    prob = 0 if "prob" not in block else block["prob"]  # Obtiene la probabilidad de generación (0 si no está definida)
+                    # Si se cumple la probabilidad de generación
+                    if random.randint(0, 100) < prob:
+                        index = random.randint(0, len(obj) - 1)  # Genera un índice aleatorio dentro de la lista de objetos
+                        self.background.append((pos_x + obj[index]["x"], pos_y + obj[index]["y"], obj[index]["key"]))  # Agrega el objeto a la lista de elementos de fondo
+
+    # Obtiene el ID del bloque en la posición especificada
+    def get_block_id(self, x, y):
+        result = None  # Inicializa el resultado a None
+        if y in self.world:  # Si la fila existe en el árbol binario
+            if x in self.world[y]:  # Si la columna existe en el árbol de la fila
+                result = self.world[y][x]  # Obtiene el ID del bloque
+        return result  # Devuelve el resultado
+
+    # Dibuja los bloques del nivel en el canvas
+    def draw_blocks(self):
+        camera_block = pygame.Rect(self.default_camera.get_camere_block())
+        for block in self.blocks:  # Recorre los bloques del nivel
+            x = block['x']
+            y = block['y']
+            w = block['w']
+            h = block['h']
+            init_x = x * self.block_size
+            init_y = y * self.block_size
+            t = self.texture.get_texture(block["name"])  # Obtiene la textura del bloque
+            if camera_block.colliderect((x, y, w, h)):  # Si el bloque está dentro del área visible de la cámara
+                if block['draw'] == "fill":   # Si el bloque se dibuja completo
+                    self.canvas.blit(t, (init_x, init_y))  # Dibuja la textura completa en el canvas
+                elif block['draw'] == "repeat":   # Si el bloque se dibuja repetido
+                    offset_y = 0  # Inicializa el desplazamiento vertical
+                    while offset_y < h:  # Recorre las filas del bloque
+                        offset_x = 0  # Inicializa el desplazamiento horizontal
+                        while offset_x < w:  # Recorre las columnas del bloque
+                            if camera_block.collidepoint(x + offset_x, y + offset_y):  # Si la celda actual está dentro del área visible de la cámara
+                                pos_x = init_x + offset_x * self.block_size  # Calcula la posición x de la celda en el canvas
+                                pos_y = init_y + offset_y * self.block_size  # Calcula la posición y de la celda en el canvas
+                                self.canvas.blit(t, (pos_x, pos_y))  # Dibuja la textura en la celda actual
+                            offset_x += 1  # Incrementa el desplazamiento horizontal
+                        offset_y += 1  # Incrementa el desplazamiento vertical
