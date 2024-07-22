@@ -193,3 +193,66 @@ class Adventure:
                 self.screen.fill((0, 0, 0))  # Limpia la pantalla
             pygame.draw.rect(self.canvas, BGCOLOR, self.default_camera.rect, 0)  # Dibuja el fondo del canvas
             self.delay = self.clock.tick()   # Actualiza el reloj del juego y obtiene el tiempo transcurrido
+
+    # Carga el nivel del juego
+    def load_level(self, level):
+        level_file_name = "./level/" + level  # Construye la ruta del archivo del nivel
+        level_file = open(level_file_name, "r")  # Abre el archivo del nivel en modo lectura
+        level_obj = json.load(level_file)  # Carga el archivo JSON del nivel
+
+        # Obtiene las propiedades del nivel desde el archivo JSON
+        self.world_row = level_obj['worldRow']  # Número de filas del mundo
+        self.world_col = level_obj['worldCol']  # Número de columnas del mundo
+        self.block_size = level_obj['blockSize']  # Tamaño de los bloques
+        self.scale = level_obj['scale']  # Escala del canvas
+
+        # Crea la superficie del canvas con las dimensiones del mundo
+        self.canvas = pygame.Surface(((self.world_col * self.block_size) + 1, (self.world_row * self.block_size) + 1))
+        self.canvas_width, self.canvas_height = self.canvas.get_size()  # Obtiene el ancho y alto del canvas
+
+        # Crea las cámaras por defecto y para debug
+        self.default_camera = camera.Camera(self.scale,  # Crea la cámara por defecto
+                                        (self.canvas_width, self.canvas_height),  # Tamaño del canvas
+                                        (self.window_width, self.window_height),  # Tamaño de la ventana
+                                        (self.canvas_width, self.canvas_height),  # Área visible del canvas
+                                        self.block_size)  # Tamaño de los bloques
+        self.debug_camera = camera.Camera(1,  # Crea la cámara para debug
+                                      (self.canvas_width / 2, self.canvas_height),  # Tamaño del canvas para debug (mitad del ancho)
+                                      (self.window_width, self.window_height),  # Tamaño de la ventana
+                                      (self.canvas_width, self.canvas_height),  # Área visible del canvas
+                                      self.block_size)  # Tamaño de los bloques
+
+        # Inicializa la cámara actual con la cámara por defecto
+        self.camera = self.default_camera
+        self.camera.update_camera_rect()  # Actualiza el rectángulo de la cámara
+
+        # Obtiene el punto de inicio del personaje
+        self.start_point = level_obj["start"]
+        # Crea el personaje en el punto de inicio
+        self.ch = character.Character(self.start_point["x"], self.start_point["y"], 32, 32)
+
+        # Posiciona la cámara en el punto de inicio del personaje
+        self.default_camera.pos['x'] = self.ch.x
+        self.default_camera.pos['y'] = self.ch.y
+
+        # Inicializa las listas de elementos de fondo y el árbol binario para los bloques
+        self.background = []
+        self.camera_background = []
+        self.world = rbtree.RBTree()  # Crea un árbol binario para almacenar los bloques del mundo
+        self.blocks = level_obj["blocks"]  # Obtiene la información de los bloques del archivo JSON
+
+        # Recorre los bloques y crea los objetos correspondientes
+        index = 0
+        for block in self.blocks:
+            self.new_block(block, index)  # Crea un nuevo bloque
+            index += 1
+
+        # Marca el juego como listo
+        self.ready = True
+
+        # Carga el fondo de la cámara
+        for bg in level_obj["camera_background"]:
+            x = self.default_camera.rect.w * bg["x"]  # Calcula la posición x del elemento de fondo
+            y = self.default_camera.rect.h * bg["y"]  # Calcula la posición y del elemento de fondo
+            key = bg["key"]  # Obtiene la clave del elemento de fondo
+            self.camera_background.append((x, y, key))  # Agrega el elemento de fondo a la lista
