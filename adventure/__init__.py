@@ -1,11 +1,11 @@
 import json  # Importa el módulo 'json' para trabajar con archivos JSON
 import random  # Importa el módulo 'random' para generar números aleatorios
-import pygame  
-import os  
-from adventure import clock  
-from adventure import camera  
-from adventure import texture  
-from adventure import character  
+import pygame  # Importa el módulo 'pygame' para funciones relacionadas con el juego
+import os  # Importa el módulo 'os' para funciones relacionadas con el sistema operativo
+from adventure import clock  # Importa la clase 'GameClock' del módulo 'adventure'
+from adventure import camera  # Importa la clase 'Camera' del módulo 'adventure'
+from adventure import texture  # Importa la clase 'Texture' del módulo 'adventure'
+from adventure import character  # Importa la clase 'Character' del módulo 'adventure'
 from bintrees import rbtree  # Importa el módulo 'rbtree' para trabajar con árboles binarios
 
 # Define la bandera para el modo de pantalla completa
@@ -17,8 +17,10 @@ BGCOLOR = (54, 143, 203)  # Azul claro
 # Define la gravedad
 GRAVITY = 800  # Valor de la gravedad
 
-# Clase principal para gestionar el juego
 class Adventure:
+    """
+    Clase principal para gestionar el juego.
+    """
 
     initialized = False  # Bandera para indicar si el juego se ha inicializado
     ready = False  # Bandera para indicar si el juego está listo para comenzar
@@ -66,8 +68,13 @@ class Adventure:
 
     ch = None  # Objeto 'Character' del personaje
 
-    # Inicializa el juego con las configuraciones del archivo JSON.
     def init(self, config_obj):
+        """
+        Inicializa el juego con las configuraciones del archivo JSON.
+
+        Args:
+            config_obj: Diccionario con las configuraciones del juego.
+        """
 
         # Si el juego no se ha inicializado
         if not self.initialized:
@@ -120,3 +127,69 @@ class Adventure:
             self.load_level(self.level)
             self.initialized = True  # Marca el juego como inicializado
             self.dir = 4  # Inicializa la dirección del personaje
+
+    # Inicia el bucle principal del juego
+    def start(self):
+        self.clock.tick()  # Actualiza el reloj del juego
+        while not self.done:  # Bucle principal del juego
+            for event in pygame.event.get():  # Maneja los eventos del juego
+                if event.type == pygame.QUIT:  # Si se presiona la tecla "X" de la ventana
+                    self.done = True  # Marca el juego como terminado
+                    continue  # Continúa con el bucle principal
+
+                if event.type == pygame.KEYDOWN: # Si se presiona una tecla
+                    if event.key == pygame.K_F8:  # Si se presiona F8
+                        self.debug = not self.debug  # Activa/desactiva el modo de depuración
+                        if self.debug:  # Si se activa el modo de depuración
+                            self.camera = self.debug_camera  # Cambia a la cámara de depuración
+                            self.camera.pos = self.default_camera.pos  # Restablece la posición de la cámara
+                            self.camera.update_camera_rect()  # Actualiza el rectángulo de la cámara
+                        else:
+                            self.camera = self.default_camera  # Cambia a la cámara por defecto
+                    if event.key == pygame.K_r:  # Si se presiona R
+                        self.restart()  # Reinicia el juego
+                        break  # Sale del bucle de eventos
+
+                if event.type == pygame.MOUSEBUTTONDOWN: # Si se hace clic en el ratón
+                    if self.debug:  # Si se está en modo de depuración
+                        if event.button == 4 or event.button == 5:  # Si se hace clic en la rueda del ratón
+                            delta = -0.01 if event.button == 4 else 0.01  # Define el delta de escala
+                            self.debug_camera.set_scale(self.debug_camera.scale + delta)  # Ajusta la escala de la cámara de depuración
+                            self.screen.fill((0, 0, 0))  # Limpia la pantalla
+
+            if not self.ready:  # Si el juego no está listo
+                continue  # Continúa con el bucle principal
+  
+
+            vx = self.lerp(self.default_camera.pos['x'], self.ch.x, 10 * self.delay)  # Interpola la posición x de la cámara
+            vy = self.lerp(self.default_camera.pos['y'], self.ch.y, 10 * self.delay)  # Interpola la posición y de la cámara
+
+            self.default_camera.pos["x"] = vx  # Actualiza la posición x de la cámara
+            self.default_camera.pos["y"] = vy  # Actualiza la posición y de la cámara
+            self.default_camera.update_camera_rect()
+            self.draw_camera_background()  # Dibuja el fondo de la cámara
+            self.draw_blocks()  # Dibuja los bloques del nivel
+            self.draw_background()  # Dibuja el fondo del juego
+            self.ch.handle(pygame.key.get_pressed())  # Maneja las entradas del jugador
+            self.ch.update(self.delay)  # Actualiza el personaje
+            self.ch.draw(self.canvas)   # Dibuja el personaje en el canvas
+
+            # ------ debug ------ #
+            if self.debug:
+                self.default_camera.draw_camera_gird(self.canvas)
+                px, py = self.debug_camera.get_mouse_hover_point();
+                pygame.draw.rect(self.canvas, (255, 0, 0),
+                                 (px * self.block_size, py * self.block_size, self.block_size, self.block_size), 2)
+                pygame.draw.rect(self.canvas, (0, 255, 0), self.default_camera.rect, 2)
+
+            self.camera.surface.blit(self.canvas.subsurface(self.camera.rect), (0, 0))
+
+            self.screen.blit(pygame.transform.smoothscale(self.camera.surface, (self.window_width, self.window_height)),
+                             (self.camera.offset_x, self.camera.offset_y)) # Dibuja la superficie de la cámara en la pantalla, redimensionándola al tamaño de la ventana
+
+            self.screen.blit(self.font.render(str(self.clock.get_fps()), True, (255, 0, 0)), (0, 0)) # Dibuja el FPS en la pantalla
+            pygame.display.update()  # Actualiza la pantalla
+            if self.camera.offset_x > 0 or self.camera.offset_y > 0:  # Si la cámara tiene un desplazamiento
+                self.screen.fill((0, 0, 0))  # Limpia la pantalla
+            pygame.draw.rect(self.canvas, BGCOLOR, self.default_camera.rect, 0)  # Dibuja el fondo del canvas
+            self.delay = self.clock.tick()   # Actualiza el reloj del juego y obtiene el tiempo transcurrido
