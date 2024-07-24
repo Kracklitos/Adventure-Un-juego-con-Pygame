@@ -1,0 +1,539 @@
+{
+  "worldCol": 75,
+  "worldRow": 30,
+  "blockSize": 32,
+  "scale": 0.8,
+  "blocks": [
+    {
+      "name": "t1",
+      "draw": "repeat",
+      "x": 0,
+      "y": 26,
+      "w": 100,
+      "h": 1,
+      "prob": 30,
+      "gen": [
+        {
+          "x": 0,
+          "y": -1,
+          "key": "grass1"
+        },
+        {
+          "x": 0,
+          "y": -1,
+          "key": "grass2"
+        },
+        {
+          "x": 0,
+          "y": -1,
+          "key": "flor1"
+        },
+        {
+          "x": 0,
+          "y": -1,
+          "key": "flor2"
+        }
+      ]
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 0,
+      "y": 27,
+      "w": 100,
+      "h": 3,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 0,
+      "y": 5,
+      "w": 10,
+      "h": 5,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 10,
+      "y": 10,
+      "w": 1,
+      "h": 4,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 10,
+      "y": 14,
+      "w": 57,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 10,
+      "y": 26,
+      "w": 57,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 10,
+      "y": 20,
+      "w": 1,
+      "h": 6,
+      "gen": []
+    },
+    {
+      "name": "spike",
+      "draw": "repeat",
+      "collision": "died",
+      "x": 15,
+      "y": 25,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "spike",
+      "draw": "repeat",
+      "collision": "died",
+      "x": 20,
+      "y": 25,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "spike",
+      "draw": "repeat",
+      "collision": "died",
+      "x": 25,
+      "y": 25,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "spike",
+      "draw": "repeat",
+      "collision": "died",
+      "x": 30,
+      "y": 25,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "spike",
+      "draw": "repeat",
+      "collision": "died",
+      "x": 35,
+      "y": 25,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "spike",
+      "draw": "repeat",
+      "collision": "died",
+      "x": 40,
+      "y": 25,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "spike",
+      "draw": "repeat",
+      "collision": "died",
+      "x": 45,
+      "y": 25,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "spike",
+      "draw": "repeat",
+      "collision": "died",
+      "x": 50,
+      "y": 25,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "spike",
+      "draw": "repeat",
+      "collision": "died",
+      "x": 55,
+      "y": 25,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "spike",
+      "draw": "repeat",
+      "collision": "died",
+      "x": 60,
+      "y": 25,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "spike",
+      "draw": "repeat",
+      "collision": "died",
+      "x": 65,
+      "y": 25,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "spike",
+      "draw": "repeat",
+      "collision": "died",
+      "x": 70,
+      "y": 25,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 70,
+      "y": 20,
+      "w": 1,
+      "h": 6,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 70,
+      "y": 0,
+      "w": 1,
+      "h": 11,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 70,
+      "y": 12,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 70,
+      "y": 13,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 70,
+      "y": 14,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 70,
+      "y": 15,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 70,
+      "y": 16,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 70,
+      "y": 17,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 70,
+      "y": 18,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 70,
+      "y": 19,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 70,
+      "y": 20,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 70,
+      "y": 21,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 70,
+      "y": 22,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 70,
+      "y": 23,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 70,
+      "y": 24,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 70,
+      "y": 25,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "transparent",
+      "draw": "repeat",
+      "collision": "jump",
+      "power": 1000,
+      "x": 11,
+      "y": 26,
+      "w": 1,
+      "h": 1,
+      "prob": 101,
+      "gen": [
+        {
+          "x": 0,
+          "y": -1,
+          "key": "fan"
+        }
+      ]
+    },
+    {
+      "name": "transparent",
+      "draw": "repeat",
+      "collision": "jump",
+      "power": 1000,
+      "x": 35,
+      "y": 26,
+      "w": 1,
+      "h": 1,
+      "prob": 101,
+      "gen": [
+        {
+          "x": 11,
+          "y": -1,
+          "key": "fan"
+        }
+      ]
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 64,
+      "y": 23,
+      "w": 4,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "spike",
+      "draw": "fill",
+      "collision": "died",
+      "x": 64,
+      "y": 22,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "spike",
+      "draw": "repeat",
+      "collision": "died",
+      "x": 67,
+      "y": 22,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 55,
+      "y": 14,
+      "w": 4,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "spike",
+      "draw": "fill",
+      "collision": "died",
+      "x": 55,
+      "y": 13,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "spike",
+      "draw": "fill",
+      "collision": "died",
+      "x": 56,
+      "y": 13,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 62,
+      "y": 17,
+      "w": 2,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "fill",
+      "x": 70,
+      "y": 12,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "fill",
+      "x": 60,
+      "y": 8,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "fill",
+      "x": 70,
+      "y": 4,
+      "w": 1,
+      "h": 1,
+      "gen": []
+    },
+    {
+      "name": "t2",
+      "draw": "repeat",
+      "x": 70,
+      "y": 25,
+      "w": 1,
+      "h": 2,
+      "gen": []
+    },
+    {
+      "name": "t1",
+      "draw": "fill",
+      "transport": "3.json",
+      "x": 5,
+      "y": 26,
+      "w": 1,
+      "h": 1,
+      "prob": 101,
+      "gen": [
+        {
+          "x": 0,
+          "y": -2,
+          "key": "teleport"
+        }
+      ]
+    }
+  ],
+  "camera_background": [
+    {
+      "x": 0.85,
+      "y": 0.01,
+      "key": "sun"
+    },
+    {
+      "x": 0.55,
+      "y": 0.03,
+      "key": "cloud1"
+    },
+    {
+      "x": 0.05,
+      "y": 0.04,
+      "key": "cloud2"
+    },
+    {
+      "x": 0.27,
+      "y": 0.06,
+      "key": "cloud3"
+    }
+  ],
+  "start": {
+    "x": 1,
+    "y": 26
+  }
+}
