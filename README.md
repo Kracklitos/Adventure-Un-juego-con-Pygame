@@ -44,7 +44,7 @@ Los niveles del juego se diseñaron con diferentes mecánicas de juego y se util
 
 ### 🗺️ Imagen del modo debug a gran escala para observar todo el nivel:
 <div align="center">
-  <img src="image/1.png" alt="Imagen del modo debug a gran escala" width="400">
+  <img src="image/3.png" alt="Imagen del modo debug a gran escala" width="400">
 </div>
 
 ## 🤩 Aspectos Destacados
