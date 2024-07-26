@@ -61,6 +61,13 @@ Se pueden considerar futuras mejoras para el juego:
 * **Implementar un sistema de enemigos:** Incluir enemigos con diferentes comportamientos para aumentar la dificultad del juego.
 * **Diseño de niveles más complejos:** Diseñar niveles más desafiantes con más puzzles y mecánicas de juego.
 
+## 🕹️ Controles del Juego
+
+* **W:** Saltar.
+* **A & D:** Mover a la izquierda y derecha.
+* **R:** Reiniciar el mundo.
+* **F8:** Entrar al modo debug.
+
 ## 🙌 Contribuciones
 
 Este proyecto es un esfuerzo individual, pero agradezco cualquier comentario o sugerencia para mejorarlo. Si tienes interés en contribuir al proyecto, no dudes en contactarme.
